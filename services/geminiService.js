@@ -1,6 +1,7 @@
 // services/geminiService.js
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+console.log(process.env.GEMINI_API_KEY);
 
 if (!process.env.GEMINI_API_KEY) {
   console.error("❌ GEMINI_API_KEY is missing in .env file");
