@@ -1,10 +1,15 @@
 // services/geminiService.js
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();  // load .env only in local dev
+}
+
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-console.log(process.env.GEMINI_API_KEY);
+
+// Debug log (just once, careful not to log the full key in production)
+console.log("🔑 GEMINI_API_KEY present?", !!process.env.GEMINI_API_KEY);
 
 if (!process.env.GEMINI_API_KEY) {
-  console.error("❌ GEMINI_API_KEY is missing in .env file");
+  console.error("❌ GEMINI_API_KEY is missing (check Railway Variables or .env file)");
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -26,19 +31,13 @@ async function generateSummary(transcript, prompt) {
     let summary = result.response?.text() || "";
     console.log("📌 Raw summary from Gemini:", summary);
 
-    // Remove bold/italic markdown but keep bullets and numbering
-    summary = summary.replace(/\*\*(.*?)\*\*/g, "$1");
-    summary = summary.replace(/(?<!^)\*(.*?)\*/g, "$1");
-
-    // Optional: trim extra spaces
-    summary = summary.trim();
+    // Remove markdown but keep numbering/bullets
+    summary = summary.replace(/\*\*(.*?)\*\*/g, "$1").replace(/(?<!^)\*(.*?)\*/g, "$1").trim();
 
     console.log("✅ Final cleaned summary:", summary);
     return summary || "⚠️ No summary generated.";
   } catch (error) {
     console.error("❌ Gemini API error:", error.message || error);
-
-    // Return a safe fallback message for testing
     return "⚠️ Error while generating summary. Check server logs.";
   }
 }
