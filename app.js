@@ -4,7 +4,9 @@ const bodyParser = require("body-parser");
 
 const summaryRoutes = require("./routes/summaryRoutes");
 const emailRoutes = require("./routes/emailRoutes");
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const app = express();
 
 app.use(cors({
