@@ -4,14 +4,18 @@ const bodyParser = require("body-parser");
 
 const summaryRoutes = require("./routes/summaryRoutes");
 const emailRoutes = require("./routes/emailRoutes");
-
+require("dotenv").config();
 const app = express();
 
 app.use(cors({
-  origin: ["https://mongo-desk-frontend.vercel.app"], // your frontend
+  origin: [
+    "https://mongo-desk-frontend.vercel.app", 
+    "http://localhost:3000"
+  ],
   methods: ["GET", "POST"],
   credentials: true
 }));
+
 app.use(bodyParser.json());
 
 // register routes
